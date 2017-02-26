@@ -2,4 +2,7 @@
     <string name="app_name">Smart Traffic Light</string>
     <string name="etPassword_hint">Enter Password</string>
     <string name="bToggle">Toggle</string>
+    <string name="IOExceptionLog">IO Exception</string>
+    <string name="NoPairedDeviceError">No paired devices</string>
+    <string name="BtDisabledError">Bluetooth is disabled</string>
 </resources>
