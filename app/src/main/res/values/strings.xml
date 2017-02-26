@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Smart Traffic Light</string>
+    <string name="etPassword_hint">Enter Password</string>
+    <string name="bToggle">Toggle</string>
+</resources>
