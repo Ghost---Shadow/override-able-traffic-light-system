@@ -15,6 +15,7 @@ import android.widget.TextView;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
@@ -53,20 +54,45 @@ public class MainActivity extends AppCompatActivity {
                         Object[] devices = bondedDevices.toArray();
                         BluetoothDevice device = (BluetoothDevice) devices[0];
                         ParcelUuid[] uuids = device.getUuids();
-                        BluetoothSocket socket = device.createRfcommSocketToServiceRecord(uuids[0].getUuid());
-                        socket.connect();
+                        Log.i("info",device.getName());
+                        BluetoothSocket socket = null;
+                        try {
+                            socket = device.createRfcommSocketToServiceRecord(uuids[0].getUuid());
+                            socket.connect();
+                        }catch (IOException e){
+                            try {
+                                Log.i("error","Using alternative");
+                                socket = (BluetoothSocket) device.getClass().getMethod("createRfcommSocket", new Class[]{int.class}).invoke(device, 1);
+                                socket.connect();
+                            } catch (NoSuchMethodException e1) {
+                                e1.printStackTrace();
+                            } catch (IllegalAccessException e1) {
+                                e1.printStackTrace();
+                            } catch (InvocationTargetException e1) {
+                                e1.printStackTrace();
+                            }
+                        }
+                        //BluetoothSocket socket =(BluetoothSocket) device.getClass().getMethod("createRfcommSocket", new Class[] {int.class}).invoke(device,1);
+                        //BluetoothSocket socket = device.createInsecureRfcommSocketToServiceRecord(uuids[0].getUuid());
+                        if(socket == null)
+                            throw new IOException();
+
                         outputStream = socket.getOutputStream();
                         //inStream = socket.getInputStream();
                         outputStream.write(str.getBytes());
+                        outputStream.close();
                         socket.close();
+                        tvLog.setText(R.string.MessageSent);
+                    } else {
+                        Log.e("error", "No appropriate paired devices.");
+                        tvLog.setText(R.string.NoPairedDeviceError);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
                     tvLog.setText(R.string.IOExceptionLog);
                 }
 
-                Log.e("error", "No appropriate paired devices.");
-                tvLog.setText(R.string.NoPairedDeviceError);
+
             } else {
                 Log.e("error", "Bluetooth is disabled.");
                 tvLog.setText(R.string.BtDisabledError);

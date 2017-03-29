@@ -5,4 +5,5 @@
     <string name="IOExceptionLog">IO Exception</string>
     <string name="NoPairedDeviceError">No paired devices</string>
     <string name="BtDisabledError">Bluetooth is disabled</string>
+    <string name="MessageSent">Sent</string>
 </resources>
